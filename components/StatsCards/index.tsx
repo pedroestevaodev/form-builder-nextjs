@@ -25,7 +25,7 @@ const StatsCard = ({
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold">
-                    {!loading && (
+                    {loading && (
                         <Skeleton>
                             <span className="opacity-0">0</span>
                         </Skeleton>
@@ -45,7 +45,7 @@ const StatsCards = ({ data, loading }: StatsCardsProps) => {
                 title="Total Visits"
                 icon={<LucideView className="text-blue-600" />}
                 helperText="All time form visits"
-                value={data?.visits.toLocaleString() || ""}
+                value={data && 'visits' in data ? data.visits.toLocaleString() : ""}
                 loading={loading}
                 className="shadow-md shadow-blue-600"
             />
@@ -53,7 +53,8 @@ const StatsCards = ({ data, loading }: StatsCardsProps) => {
                 title="Total Submissions"
                 icon={<FaWpforms className="text-yellow-600" />}
                 helperText="All time form submissions"
-                value={data?.submissions.toLocaleString() || ""}
+                // value={data?.submissions.toLocaleString() || ""}
+                value={data && 'submissions' in data ? data.visits.toLocaleString() : ""}
                 loading={loading}
                 className="shadow-md shadow-yellow-600"
             />
@@ -61,7 +62,8 @@ const StatsCards = ({ data, loading }: StatsCardsProps) => {
                 title="Submission Rate"
                 icon={<HiCursorClick className="text-blue-600" />}
                 helperText="Visits that resulted in form submission"
-                value={`${data?.submissionRate.toLocaleString()}%` || ""}
+                // value={`${data?.submissionRate.toLocaleString()}%` || ""}
+                value={data && 'submissionRate' in data ? data.visits.toLocaleString() : ""}
                 loading={loading}
                 className="shadow-md shadow-blue-600"
             />
@@ -69,7 +71,8 @@ const StatsCards = ({ data, loading }: StatsCardsProps) => {
                 title="Bounce Rate"
                 icon={<TbArrowBounce className="text-red-600" />}
                 helperText="Visits that leaves without interacting"
-                value={`${data?.visits.toLocaleString()}%` || ""}
+                // value={`${data?.visits.toLocaleString()}%` || ""}
+                value={data && 'visits' in data ? data.visits.toLocaleString() : ""}
                 loading={loading}
                 className="shadow-md shadow-red-600"
             />

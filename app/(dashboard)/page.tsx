@@ -6,7 +6,7 @@ import { FormCards, FormCardSkeleton } from "@/components/FormCards";
 
 const HomePage = () => {
 	return (
-		<div className="container pt-4">
+		<div className="container mx-auto pt-4">
 			<Suspense fallback={<StatsCards loading={true} />}>
 				<CardStatsWrapper />
 			</Suspense>

@@ -5,11 +5,11 @@ import { UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-const DashboardLayout = async ({ children }: Readonly<ChildrenProps>) => {
+const AuthLayout = async ({ children }: Readonly<ChildrenProps>) => {
     const user = await currentUser();
 
-    if (!user) {
-        redirect('/sign-in');
+    if (user) {
+        redirect('/');
     }
 
     return (
@@ -28,4 +28,4 @@ const DashboardLayout = async ({ children }: Readonly<ChildrenProps>) => {
     );
 };
 
-export default DashboardLayout;
+export default AuthLayout;

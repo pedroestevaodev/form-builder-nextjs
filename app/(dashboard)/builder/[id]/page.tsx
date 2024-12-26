@@ -5,7 +5,7 @@ import { BuilderPageProps } from "@/types/nextjs";
 const BuilderPage = async ({
     params,
 }: BuilderPageProps) => {
-    const { id } = params;
+    const { id } = await params;
     const form = await GetFormById(Number(id));
 
     if (!form) throw new Error('Form not found');

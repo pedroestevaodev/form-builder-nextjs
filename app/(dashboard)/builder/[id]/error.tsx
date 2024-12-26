@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { ErrorPageProps } from "@/types/nextjs";
 import Link from "next/link";

@@ -7,7 +7,7 @@ export interface ErrorPageProps {
 };
 
 export interface BuilderPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 };

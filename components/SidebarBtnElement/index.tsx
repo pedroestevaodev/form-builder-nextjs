@@ -10,7 +10,7 @@ const SidebarBtnElement = ({ formElement }: SidebarBtnElementProps) => {
         id: `designer-btn-${formElement.type}`,
         data: {
             type: formElement.type,
-            isDesignerElement: true,
+            isDesignerBtnElement: true,
         },
     });
 
