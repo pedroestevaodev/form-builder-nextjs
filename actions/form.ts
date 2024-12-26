@@ -101,4 +101,40 @@ const GetFormById = async (id: number) => {
     return form;
 };
 
-export { GetFormStats, CreateForm, GetForms, GetFormById };
+const UpdateFormContent = async (id: number, jsonContent: string) => {
+    const user = await currentUser();
+
+    if (!user) throw new UserNotFoundError();
+
+    const form = await prisma.form.update({
+        where: {
+            id,
+            userId: user.id,
+        },
+        data: {
+            content: jsonContent,
+        },
+    });
+
+    return form;
+};
+
+const PublishForm = async (id: number) => {
+    const user = await currentUser();
+
+    if (!user) throw new UserNotFoundError();
+
+    const form = await prisma.form.update({
+        where: {
+            id,
+            userId: user.id,
+        },
+        data: {
+            published: true,
+        },
+    });
+
+    return form;
+};
+
+export { GetFormStats, CreateForm, GetForms, GetFormById, UpdateFormContent, PublishForm };

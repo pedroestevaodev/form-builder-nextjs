@@ -35,7 +35,8 @@ const DesignerProvider = ({ children }: Readonly<ChildrenProps>) => {
     return (
         <DesignerContext.Provider 
             value={{ 
-                elements, 
+                elements,
+                setElements,
                 addElement,
                 updateElement,
                 removeElement,

@@ -8,4 +8,5 @@ export interface DesignerContextProps {
     removeElement: (id: string) => void;
     selectedElement: FormElementInstance | null;
     setSelectedElement: Dispatch<SetStateAction<FormElementInstance | null>>;
+    setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
 };

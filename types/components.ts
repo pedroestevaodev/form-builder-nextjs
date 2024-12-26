@@ -64,3 +64,7 @@ export interface SidebarBtnElementProps {
 export interface DesignerElementWrapperProps {
     element: FormElementInstance;
 };
+
+export interface BtnFormProps {
+    id: number;
+};
