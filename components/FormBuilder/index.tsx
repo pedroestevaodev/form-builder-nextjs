@@ -18,7 +18,7 @@ import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Confetti from "react-confetti";
 
 const FormBuilder = ({ form }: FormBuilderProps) => {
-    const { setElements } = useDesigner();
+    const { setElements, setSelectedElement } = useDesigner();
 
     const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -42,10 +42,12 @@ const FormBuilder = ({ form }: FormBuilderProps) => {
 
         const elements = JSON.parse(form.content);
         setElements(elements);
+        setSelectedElement(null);
+        setIsReady(true);
         const readyTimeout = setTimeout(() => setIsReady(true), 500);
 
         return () => clearTimeout(readyTimeout);
-    }, [form, setElements, isReady]);
+    }, [form, setElements, isReady, setSelectedElement]);
 
     if (!isReady) {
         return (

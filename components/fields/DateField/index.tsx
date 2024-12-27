@@ -1,24 +1,28 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { useDesigner } from "@/contexts/DesignerContext";
 import { cn } from "@/lib/utils";
-import { textFieldPropertiesSchema } from "@/schemas/fields";
+import { dateFieldPropertiesSchema } from "@/schemas/fields";
 import { ComponentProps, ElementsType, FormElement, FormElementInstance } from "@/types/components";
-import { TextFieldPropertiesSchema } from "@/types/schemas";
+import { DateFieldPropertiesSchema } from "@/types/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdTextFields } from "react-icons/md";
+import { BsFillCalendarDateFill } from "react-icons/bs";
 
 const extraAttributes = {
-    label: "Text field",
-    helperText: "Helper text",
+    label: "Date field",
+    helperText: "Pick a date",
     required: false,
-    placeHolder: "Value here...",
 };
 
 type CustomInstance = FormElementInstance & {
@@ -28,11 +32,10 @@ type CustomInstance = FormElementInstance & {
 const DesignerComponent = ({ elementInstance }: ComponentProps) => {
     const element = elementInstance as CustomInstance;
 
-    const { 
-        helperText, 
-        label, 
-        placeHolder, 
-        required 
+    const {
+        label,
+        helperText,
+        required
     } = element.extraAttributes;
 
     return (
@@ -41,7 +44,13 @@ const DesignerComponent = ({ elementInstance }: ComponentProps) => {
                 {label}
                 {required && <span className="text-red-500">*</span>}
             </Label>
-            <Input readOnly disabled placeholder={placeHolder} />
+            <Button
+                variant={"outline"}
+                className="w-full justify-start text-left font-normal"
+            >
+                <CalendarIcon className="mr-2 size-4" />
+                <span>Pick a date</span>
+            </Button>
             {helperText && (
                 <p className="text-sm text-muted-foreground">{helperText}</p>
             )}
@@ -52,14 +61,14 @@ const DesignerComponent = ({ elementInstance }: ComponentProps) => {
 const FormComponent = ({ elementInstance, submitValue, isInvalid, defaultValue }: ComponentProps) => {
     const element = elementInstance as CustomInstance;
 
-    const [value, setValue] = useState<string>(defaultValue || "");
+    const [date, setDate] = useState<Date | undefined>(defaultValue ? new Date(defaultValue) : undefined);
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
         setError(isInvalid === true);
     }, [isInvalid]);
 
-    const { helperText, label, placeHolder, required } = element.extraAttributes;
+    const { helperText, label, required } = element.extraAttributes;
 
     return (
         <div className="flex flex-col gap-2 w-full">
@@ -67,21 +76,39 @@ const FormComponent = ({ elementInstance, submitValue, isInvalid, defaultValue }
                 {label}
                 {required && <span className="text-red-500">*</span>}
             </Label>
-            <Input
-                className={cn(error && "border-red-500")}
-                placeholder={placeHolder}
-                onChange={(e) => setValue(e.target.value)}
-                onBlur={(e) => {
-                    if (!submitValue) return;
-                    const valid = TextFieldFormElement.validate(element, e.target.value);
-                    setError(!valid);
-                    if (!valid) return;
-                    submitValue(element.id, e.target.value);
-                }}
-                value={value}
-            />
+            <Popover>
+                <PopoverTrigger>
+                    <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground",
+                            error && "border-red-500",
+                        )}
+                    >
+                        <CalendarIcon className="mr-2 size-4" />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={(date) => {
+                            setDate(date);
+
+                            if (!submitValue) return;
+                            const value = date?.toUTCString() || "";
+                            const valid = DateFieldFormElement.validate(element, value);
+                            setError(!valid);
+                            submitValue(element.id, value);
+                        }}
+                        initialFocus
+                    />
+                </PopoverContent>
+            </Popover>
             {helperText && (
-                <p 
+                <p
                     className={cn(
                         "text-sm text-muted-foreground",
                         error && "text-red-500"
@@ -99,14 +126,13 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
 
     const { updateElement } = useDesigner();
 
-    const form = useForm<TextFieldPropertiesSchema>({
-        resolver: zodResolver(textFieldPropertiesSchema),
+    const form = useForm<DateFieldPropertiesSchema>({
+        resolver: zodResolver(dateFieldPropertiesSchema),
         mode: "onBlur",
         defaultValues: {
             label: element.extraAttributes.label,
             helperText: element.extraAttributes.helperText,
             required: element.extraAttributes.required,
-            placeHolder: element.extraAttributes.placeHolder,
         },
     });
 
@@ -114,8 +140,8 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
         form.reset(element.extraAttributes);
     }, [element, form]);
 
-    const applyChanges = (values: TextFieldPropertiesSchema) => {
-        const { label, helperText, placeHolder, required } = values;
+    const applyChanges = (values: DateFieldPropertiesSchema) => {
+        const { label, helperText, required } = values;
 
         updateElement(element.id, {
             ...element,
@@ -123,7 +149,6 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
                 label,
                 helperText,
                 required,
-                placeHolder,
             },
         });
     };
@@ -137,62 +162,40 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
                 }}
                 className="space-y-3"
             >
-                <FormField 
+                <FormField
                     control={form.control}
                     name="label"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Label</FormLabel>
                             <FormControl>
-                                <Input 
-                                    {...field} 
+                                <Input
+                                    {...field}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") e.currentTarget.blur();
-                                    }}    
+                                    }}
                                 />
                             </FormControl>
                             <FormDescription>
-                                The label of the field. <br /> 
+                                The label of the field. <br />
                                 It will be displayed above the field.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <FormField 
-                    control={form.control}
-                    name="placeHolder"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>PlaceHolder</FormLabel>
-                            <FormControl>
-                                <Input 
-                                    {...field} 
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") e.currentTarget.blur();
-                                    }}    
-                                />
-                            </FormControl>
-                            <FormDescription>
-                                The placeholder of the field. <br />
-                                It will be displayed below the field.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField 
+                <FormField
                     control={form.control}
                     name="helperText"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Helper Text</FormLabel>
                             <FormControl>
-                                <Input 
-                                    {...field} 
+                                <Input
+                                    {...field}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") e.currentTarget.blur();
-                                    }}    
+                                    }}
                                 />
                             </FormControl>
                             <FormDescription>
@@ -202,7 +205,7 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
                         </FormItem>
                     )}
                 />
-                <FormField 
+                <FormField
                     control={form.control}
                     name="required"
                     render={({ field }) => (
@@ -214,7 +217,7 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
                                 </FormDescription>
                             </div>
                             <FormControl>
-                                <Switch 
+                                <Switch
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
                                 />
@@ -228,9 +231,9 @@ const PropertiesComponent = ({ elementInstance }: ComponentProps) => {
     );
 };
 
-const type: ElementsType = "TextField";
+const type: ElementsType = "DateField";
 
-const TextFieldFormElement: FormElement = {
+const DateFieldFormElement: FormElement = {
     type,
     construct: (id: string) => ({
         id,
@@ -238,8 +241,8 @@ const TextFieldFormElement: FormElement = {
         extraAttributes,
     }),
     designerBtnElement: {
-        icon: MdTextFields,
-        label: "Text Field",
+        icon: BsFillCalendarDateFill,
+        label: "Date Field",
     },
     designerComponent: DesignerComponent,
     formComponent: FormComponent,
@@ -254,4 +257,4 @@ const TextFieldFormElement: FormElement = {
     },
 };
 
-export { TextFieldFormElement };
+export { DateFieldFormElement };

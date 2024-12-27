@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { PublishForm } from "@/actions/form";
 import { toast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
-import { FaIcons } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 
 const PublishFormBtn = ({ id }: BtnFormProps) => {
     const router = useRouter();
@@ -64,7 +64,7 @@ const PublishFormBtn = ({ id }: BtnFormProps) => {
                             startTransition(publishForm);
                         }}
                     >
-                        Proceed {loading && <FaIcons className="animate-spin" />}
+                        Proceed {loading && <FaSpinner className="animate-spin" />}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

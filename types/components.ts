@@ -23,14 +23,25 @@ export interface FormBuilderProps {
     form: Form;
 };
 
-export type ElementsType = "TextField";
+export type ElementsType = 
+    | "TextField" 
+    | "TitleField" 
+    | "SubTitleField" 
+    | "ParagraphField" 
+    | "SeparatorField" 
+    | "SpacerField"
+    | "NumberField"
+    | "TextAreaField"
+    | "DateField"
+    | "SelectField"
+    | "CheckboxField";
 
 export type SubmitFunction = (key: string, value: string) => void;
 
 export type FormElementInstance = {
     id: string;
     type: ElementsType;
-    extraAttributes?: Record<string, string | number | boolean>;
+    extraAttributes?: Record<string, string | number | boolean | string[]>;
 };
 
 export type FormElement = {
@@ -85,4 +96,15 @@ export interface VisitBtnProps {
 export interface FormSubmitComponentProps {
     formUrl: string;
     content: FormElementInstance[];
+};
+
+export type RowType = {
+    [key: string]: string;
+} & {
+    submittedAt: Date;
+};
+
+export interface RowCellProps {
+    type: ElementsType;
+    value: string;
 };
