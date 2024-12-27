@@ -11,3 +11,15 @@ export interface BuilderPageProps {
         id: string;
     }>;
 };
+
+export interface FormDetailPageProps {
+    params: Promise<{
+        id: string;
+    }>;
+};
+
+export interface SubmitPageProps {
+    params: Promise<{
+        formUrl: string;
+    }>;
+};

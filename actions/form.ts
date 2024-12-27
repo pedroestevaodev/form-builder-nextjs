@@ -137,4 +137,43 @@ const PublishForm = async (id: number) => {
     return form;
 };
 
-export { GetFormStats, CreateForm, GetForms, GetFormById, UpdateFormContent, PublishForm };
+const GetFormContentByUrl = async (formUrl: string) => {
+    const form = await prisma.form.update({
+        select: {
+            content: true,
+        },
+        data: {
+            visits: {
+                increment: 1,
+            },
+        },
+        where: {
+            shareUrl: formUrl,
+        },
+    });
+
+    return form;
+};
+
+const SubmitForm = async (formUrl: string, content: string) => {
+    const form = await prisma.form.update({
+        data: {
+            submissions: {
+                increment: 1,
+            },
+            FormSubmissions: {
+                create: {
+                    content,
+                },
+            },
+        },
+        where: {
+            shareUrl: formUrl,
+            published: true,
+        },
+    });
+
+    return form;
+};
+
+export { GetFormStats, CreateForm, GetForms, GetFormById, UpdateFormContent, PublishForm, GetFormContentByUrl, SubmitForm };

@@ -25,6 +25,8 @@ export interface FormBuilderProps {
 
 export type ElementsType = "TextField";
 
+export type SubmitFunction = (key: string, value: string) => void;
+
 export type FormElementInstance = {
     id: string;
     type: ElementsType;
@@ -43,14 +45,21 @@ export type FormElement = {
     }>;
     formComponent: React.FC<{
         elementInstance: FormElementInstance;
+        submitValue?: (key: string, value: string) => void;
+        isInvalid?: boolean;
+        defaultValue?: string;
     }>;
     propertiesComponent: React.FC<{
         elementInstance: FormElementInstance;
     }>;
+    validate: (formElement: FormElementInstance, currentValue: string) => boolean;
 };
 
 export interface ComponentProps {
     elementInstance: FormElementInstance;
+    submitValue?: SubmitFunction;
+    isInvalid?: boolean;
+    defaultValue?: string;
 };
 
 export type FormElementsType = {
@@ -67,4 +76,13 @@ export interface DesignerElementWrapperProps {
 
 export interface BtnFormProps {
     id: number;
+};
+
+export interface VisitBtnProps {
+    shareUrl: string;
+};
+
+export interface FormSubmitComponentProps {
+    formUrl: string;
+    content: FormElementInstance[];
 };
