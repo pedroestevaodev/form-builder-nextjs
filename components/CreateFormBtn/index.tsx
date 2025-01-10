@@ -20,6 +20,10 @@ const CreateFormBtn = () => {
 
 	const form = useForm<FormSchema>({
 		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: "",
+			description: "",
+		},
 	});
 
 	const onSubmit = async (values: FormSchema) => {
