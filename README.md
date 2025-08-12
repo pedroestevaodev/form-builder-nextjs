@@ -94,13 +94,6 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 > Make sure to set the environment variables in Vercel > Settings > Environment Variables.
 
-## Learning Credits
-
-This project was built based on the **YouTube** tutorial:
-
-🎬 [**_NextJs course: Full stack Form builder, React, Typescript, Dnd-Kit, PostgreSQL, Prisma, Tailwind_**](https://youtu.be/QGXUUXy0AMw?si=NH96eRCufnYjNWM-)  
-👨🏻‍💻 [_Kliton Bare_](https://www.youtube.com/@klitonbare)
-
 ## License
 
 This project is open source and available under the [MIT License](https://mit-license.org/).  
